@@ -1,0 +1,151 @@
+togglekey = "x"  -- fly toggle
+upkey = "="      -- makes speed faster
+downkey = "-"    -- makes speed slower
+enablepart = "u" -- enables part fly
+speed = -0.5     -- changes set speed
+updown = false   -- true if you want to go up
+notify = true    -- true if you want notifcations
+flypart = true   -- true for part fly
+
+local user = game:GetService("UserInputService")
+local player = game:GetService("Players").LocalPlayer
+local GuiService = game:GetService("StarterGui")
+local mouse = game.Players.LocalPlayer:GetMouse()
+
+local holdingWKey = false
+local holdingSKey = false
+local holdingAKey = false
+local holdingDKey = false
+local holdingSpaceKey = false
+local holdingShiftKey = false
+local check = false
+
+GuiService:SetCore("SendNotification", {Title = "Speed", Text = "Script made by Zurewrath";})
+
+mouse.KeyDown:connect(function(key)
+   if key == enablepart then
+       if flypart then
+           flypart = false
+           if notify then
+               GuiService:SetCore("SendNotification", {Title = "Speed", Text = "Disabled part fly";})
+           end
+       else
+           flypart = true
+           if notify then
+               GuiService:SetCore("SendNotification", {Title = "Speed", Text = "Enabled part fly";})
+           end
+       end
+   end
+end)
+
+mouse.KeyDown:connect(function(key)
+   if key == upkey then
+       speed = speed + -0.1
+       if notify then
+           GuiService:SetCore("SendNotification", {Title = "Speed", Text = "Speed is now set to " .. speed;})
+       end
+   end
+end)
+
+mouse.KeyDown:connect(function(key)
+   if key == downkey then
+       speed = speed - -0.1
+       if notify then
+           GuiService:SetCore("SendNotification", {Title = "Speed", Text = "Speed is now set to " .. speed;})
+       end
+   end
+end)
+
+mouse.KeyDown:connect(function(key)
+   if key == togglekey then
+       if check  == true then
+           check = false
+           if notify then
+               GuiService:SetCore("SendNotification", {Title = "Speed", Text = "Speed is now disabled";})
+           end
+           game.Workspace.fly:Destroy()
+       else
+           check = true
+           if notify then
+               GuiService:SetCore("SendNotification", {Title = "Speed", Text = "Speed is now enabled";})
+           end
+           if flypart then
+               local brick = Instance.new("Part", workspace)
+               brick.Size = Vector3.new(8, 2, 8)
+               brick.CFrame = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, -4, 0)
+               brick.Transparency = 1 brick.Anchored = true brick.Name = "fly"
+               game:GetService('RunService').Stepped:connect(function()
+                   brick.CFrame = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, -4, 0)
+                   brick.Size = Vector3.new(8+-speed, 2, 8+-speed)
+               end)
+           end
+       end
+   end
+end)
+
+game:GetService('RunService').Stepped:connect(function()
+   if check then
+       if holdingWKey == true then
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,speed)
+       end
+       if holdingSKey == true then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-speed)
+   end
+       if holdingAKey == true then
+   game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(speed,0,0)
+   end
+       if holdingDKey == true then
+   game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(-speed,0,0)    
+       end
+       if holdingShiftKey == true then
+           game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,speed,0)
+       end
+       if updown then
+           if holdingSpaceKey == true then
+               game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,-speed,0)
+           end
+       end
+   end
+end)
+
+user.InputBegan:Connect(function(inputObject)
+   if (inputObject.KeyCode == Enum.KeyCode.W) then
+       holdingWKey = true
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.S) then
+       holdingSKey = true
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.A) then
+       holdingAKey = true
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.D) then
+       holdingDKey = true
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.LeftControl) then
+       holdingShiftKey = true
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.Space) then
+       holdingSpaceKey = true
+   end
+end)
+
+user.InputEnded:Connect(function(inputObject)
+   if (inputObject.KeyCode == Enum.KeyCode.W) then
+       holdingWKey = false
+   end
+   if( inputObject.KeyCode == Enum.KeyCode.S) then
+       holdingSKey = false    
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.A) then
+       holdingAKey = false    
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.D) then
+       holdingDKey = false    
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.LeftControl) then
+       holdingShiftKey = false
+   end
+   if (inputObject.KeyCode == Enum.KeyCode.Space) then
+       holdingSpaceKey = false
+   end
+end)
